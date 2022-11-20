@@ -1,12 +1,15 @@
 package com;
 
 import java.math.BigInteger;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
     /** Attention! From the 20th perfect number, the process will start to slow down, as large numbers take up a lot of memory, RAM will be overloaded. */
 
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
         String line = "\n----------------------------------------------------------------------------------------------------\n";
         int endPoint;
         if (args.length == 0) endPoint = 50000;
@@ -19,13 +22,59 @@ public class Main {
         for (int p = 3; p <= endPoint; p += 2) {
             if (isPrime(p) && isMersennePrime(p)) {
                 calculateMersennePrime(p);
-                calculatePerfectNumber(p, line);
+                calculatePerfectNumber(p);
+                calculationTime(startTime, line);
             }
         }
+
         System.out.println();
     }
 
-    public static void calculateMersennePrime(int p) {
+    public static void calculationTime(final long startTime, final String line) {
+        long endTime = System.nanoTime();
+        long calculationTimeNanos = endTime - startTime;
+        long calculationTimeMicros = 0;
+        long calculationTimeMillis = 0;
+        long calculationTimeSeconds = 0;
+        long calculationTimeMinutes = 0;
+        long calculationTimeHours = 0;
+        long calculationTimeDays = 0;
+
+        System.out.print("\nCalculation time with nanoseconds:\t" + calculationTimeNanos);
+        if (calculationTimeNanos > 999) {
+            calculationTimeMicros = TimeUnit.NANOSECONDS.toMicros(calculationTimeNanos);
+            System.out.print("\nCalculation time with microseconds:\t" + calculationTimeMicros);
+
+            if (calculationTimeMicros > 999) {
+                calculationTimeMillis = TimeUnit.MICROSECONDS.toMillis(calculationTimeMicros);
+                System.out.print("\nCalculation time with milliseconds:\t" + calculationTimeMillis);
+
+                if (calculationTimeMillis > 999) {
+                    calculationTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(calculationTimeMillis);
+                    System.out.print("\nCalculation time with seconds:\t" + calculationTimeSeconds);
+
+                    if (calculationTimeSeconds > 59) {
+                        calculationTimeMinutes = TimeUnit.SECONDS.toMinutes(calculationTimeSeconds);
+                        System.out.print("\nCalculation time with minutes:\t" + calculationTimeMinutes);
+
+                        if (calculationTimeMinutes > 59) {
+                            calculationTimeHours = TimeUnit.MINUTES.toHours(calculationTimeMinutes);
+                            System.out.print("\nCalculation time with hours:\t" + calculationTimeHours);
+
+                            if (calculationTimeHours > 23) {
+                                calculationTimeDays = TimeUnit.HOURS.toDays(calculationTimeHours);
+                                System.out.print("\nCalculation time with days:\t" + calculationTimeDays);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("\n" + line);
+    }
+
+    public static void calculateMersennePrime(final int p) {
         int o;
         char one = '1';
         String binary = "";
@@ -36,7 +85,7 @@ public class Main {
         System.out.println("MERSENNE PRIME:\t2^" + p + "-1\nDIGITS:\t" + numberLength(mersennePrime) + "\n\n" + mersennePrime + "\n\n");
     }
 
-    public static void calculatePerfectNumber(int p, String line) {
+    public static void calculatePerfectNumber(final int p) {
         int o, z;
         char one = '1';
         char zero = '0';
@@ -49,11 +98,10 @@ public class Main {
         binary += ones + zeros;
         BigInteger perfectNumber = new BigInteger(binary, 2);
 
-        System.out.println("PERFECT NUMBER:\t2^" + (p - 1) + " * (2^" + p + "-1)\nDIGITS:\t" + numberLength(perfectNumber) + "\n\n" + perfectNumber);
-        System.out.println(line);
+        System.out.println("PERFECT NUMBER:\t2^" + (p - 1) + " * (2^" + p + "-1)\nDIGITS:\t" + numberLength(perfectNumber) + "\n\n" + perfectNumber + "\n");
     }
 
-    public static boolean isPrime(int p) {
+    public static boolean isPrime(final int p) {
         if (p == 2) return true;
         else if (p < 2 || p % 2 == 0) return false;
         else {
@@ -63,7 +111,7 @@ public class Main {
         }
     }
 
-    public static boolean isMersennePrime(int p) {
+    public static boolean isMersennePrime(final int p) {
         if (p == 2) return true;
         else {
             BigInteger mp = BigInteger.ONE.shiftLeft(p).subtract(BigInteger.ONE);
@@ -73,6 +121,7 @@ public class Main {
         }
     }
 
-    public static int numberLength(BigInteger n) {return String.valueOf(n).length();}
-
+    public static int numberLength(final BigInteger n) {
+        return String.valueOf(n).length();
+    }
 }
